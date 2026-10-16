@@ -1,0 +1,71 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="001-criacao-tabela-usuario" author="Ednaldo">
+        <createTable tableName="usuario">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_usuario"/>
+            </column>
+            <column name="nome" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="senha" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="papel" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="chamado">
+            <!-- ID Auto-incremental (GenerationType.IDENTITY mapeia para SERIAL no PostgreSQL) -->
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="pk_chamado"/>
+            </column>
+
+            <column name="titulo" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="descricao" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Enums salvos como STRING (VARCHAR) -->
+            <column name="prioridade" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="categoria" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Chave Estrangeira para Usuario (@JoinColumn(name = "id_usuario")) -->
+            <column name="id_usuario" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                constraintName="fk_chamado_usuario"
+                baseTableName="chamado"
+                baseColumnNames="id_usuario"
+                referencedTableName="usuario"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropTable tableName="usuario"/>
+            <dropTable tableName="chamado"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
